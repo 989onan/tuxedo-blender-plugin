@@ -502,6 +502,10 @@ class SmartDecimation(bpy.types.Operator):
     max_single_mesh_tris: bpy.props.IntProperty(
         default=9900
     )
+    ignore_max_single_mesh_tris: bpy.props.BoolProperty(
+        default=False
+    )
+
 
 #    def poll(cls, context):
 #        return True #context.view_layer.objects.active and context.view_layer.objects.selected
@@ -534,15 +538,15 @@ class SmartDecimation(bpy.types.Operator):
 
         print("Decimation total: " + str(decimation))
         if decimation >= 1:
-
-            decimated_a_mesh = False
-            for mesh in meshes_obj:
-                tris = get_tricount(mesh)
-                if tris > self.max_single_mesh_tris:
-                    decimation = 1. + ((self.max_single_mesh_tris - tris) / tris)
-                    print("Decimation to reduce mesh "+mesh.name+"less than max tris per mesh: " + str(decimation))
-                    self.extra_decimation_weights(context, animation_weighting, mesh, armature, animation_weighting_factor, decimation)
-                    decimated_a_mesh = True
+            if(not self.ignore_max_single_mesh_tris):
+                decimated_a_mesh = False
+                for mesh in meshes_obj:
+                    tris = get_tricount(mesh)
+                    if tris > self.max_single_mesh_tris:
+                        decimation = 1. + ((self.max_single_mesh_tris - tris) / tris)
+                        print("Decimation to reduce mesh "+mesh.name+"less than max tris per mesh: " + str(decimation))
+                        self.extra_decimation_weights(context, animation_weighting, mesh, armature, animation_weighting_factor, decimation)
+                        decimated_a_mesh = True
 
             if not decimated_a_mesh:
                 self.report({'INFO'}, "No Decimation needed.")

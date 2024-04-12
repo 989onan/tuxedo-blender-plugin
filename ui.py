@@ -147,7 +147,8 @@ class ToolPanel(Panel):
 
         row = col.row(align=True)
         row.scale_y = 1.2
-        row.operator(SmartDecimation.bl_idname, icon='MOD_DECIM')
+        decimate = row.operator(SmartDecimation.bl_idname, icon='MOD_DECIM')
+        decimate.ignore_max_single_mesh_tris = True
 
         col.separator()
         col.separator()
