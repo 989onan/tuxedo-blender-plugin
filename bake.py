@@ -988,9 +988,13 @@ class BakeButton(bpy.types.Operator):
                                         node_image.label = pass_slot
 
                                         #assign to image so it's baked
-                                        node_image.image.generated_color = node.inputs[pass_slot].default_value
-                                        solid_colors[pass_key] = node.inputs[pass_slot].default_value
-                                        node_image.image.file_format = 'PNG'
+                                        if(isinstance(node.inputs[pass_slot].default_value, float)):
+                                            floatcolor: float = node.inputs[pass_slot].default_value
+                                            node_image.image.generated_color = [floatcolor,floatcolor,floatcolor,1]
+                                            solid_colors[pass_key] = [floatcolor,floatcolor,floatcolor,1]
+                                        else:
+                                            node_image.image.generated_color = node.inputs[pass_slot].default_value
+                                            solid_colors[pass_key] = node.inputs[pass_slot].default_value
                                         material.node_tree.links.new(node_image.outputs['Color'], node_prinipled.inputs['Base Color'])
                                     else:
                                         pass_solid,pass_color = check_if_tex_solid(pass_slot,node_prinipled)
